@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Page</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="bg-gray-100 font-roboto">
+    <!-- Navbar -->
+    <nav class="bg-blue-600 p-4">
+      <div class="container mx-auto flex justify-between items-center">
+        <a href="/" class="text-white text-2xl font-semibold">TechHorizon</a>
+        <div>
+          <a
+            href="/auth/google"
+            class="text-white px-4 py-2 bg-green-500 rounded-md"
+            >Login with Google</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="text-center py-20">
+      <h1 class="text-4xl font-bold text-gray-800">Welcome to TechHorizon</h1>
+      <p class="mt-4 text-xl text-gray-600">Your Gateway to Tech Excellence</p>
+      <p class="mt-6 text-lg text-gray-500">
+        Join us in our journey to learn, grow, and innovate in the tech world!
+      </p>
+    </section>
+
+    <!-- Features Section -->
+    <section class="container mx-auto py-12">
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white shadow-lg p-6 rounded-lg">
+          <h2 class="text-2xl font-semibold text-gray-800">Events</h2>
+          <p class="mt-4 text-gray-600">
+            Stay updated with the latest tech events and activities in the
+            group.
+          </p>
+        </div>
+        <div class="bg-white shadow-lg p-6 rounded-lg">
+          <h2 class="text-2xl font-semibold text-gray-800">Resources</h2>
+          <p class="mt-4 text-gray-600">
+            Access educational materials, tutorials, and more to enhance your
+            learning.
+          </p>
+        </div>
+        <div class="bg-white shadow-lg p-6 rounded-lg">
+          <h2 class="text-2xl font-semibold text-gray-800">Community</h2>
+          <p class="mt-4 text-gray-600">
+            Connect with other members, share ideas, and collaborate on
+            projects.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-blue-600 text-white py-6">
+      <div class="container mx-auto text-center">
+        <p>&copy; 2024 TechHorizon | All rights reserved</p>
+      </div>
+    </footer>
+  </body>
+</html>
