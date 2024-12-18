@@ -1,11 +1,18 @@
 require("dotenv").config();
+const mongoose = require("mongoose");
 const express = require("express");
 const session = require("express-session");
 const path = require("path");
 const passport = require("passport");
-const { googleAuth } = require("./routes/googleAuth");
+const googleAuth = require("./routes/googleAuth");
+const users = require("./routes/users");
 
 const app = express();
+
+mongoose
+  .connect("mongodb://127.0.0.1:27017/playground")
+  .then(() => console.log("Connected to mongoDB..."))
+  .catch((err) => console.log("Could not connect to mongoDB...", err));
 
 // Express session configuration
 app.use(
@@ -20,18 +27,17 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, "../public")));
+app.use(express.static(path.join(__dirname, "./public")));
 
-// Home page route
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public", "index.html"));
+  res.sendFile(path.join(__dirname, "./public", "index.html"));
 });
 
 // Routes
 app.use("/auth/google", googleAuth);
 
-// Start server
+app.use("/api/users", users);
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
