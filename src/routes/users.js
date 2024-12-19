@@ -2,12 +2,28 @@ const { User, validate } = require("../models/user");
 const express = require("express");
 const router = express.Router();
 
-// Create a new user
 router.post("/", async (req, res) => {
-  let { value, error } = validate(req.body);
-  if (error) return res.status(200).send("error");
+  let { error } = validate(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
 
-  res.send("accoutn created", value);
+  try {
+    let user = new User(req.body);
+    user = await user.save();
+
+    res.status(201).send({
+      _id: user._id,
+      name: user.firstName + user.lastName,
+      email: user.email,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(400).send("user already registerd please log in instead.");
+  }
+});
+
+router.get("/", async (req, res) => {
+  const users = await User.find();
+  res.send(users);
 });
 
 module.exports = router;

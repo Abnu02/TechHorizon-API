@@ -43,13 +43,27 @@ router.get(
 );
 
 router.get("/protected", isLoggedIn, (req, res) => {
-  res.send(`Hello ${req.user.displayName}`);
+  res.send(
+    `Hello ${req.user.displayName} </br> <a href='/auth/google/logout'>logout</a>`
+  );
 });
 
 router.get("/logout", (req, res) => {
-  req.logout();
-  req.session.destroy();
-  res.send("Goodbye!");
+  req.logout((err) => {
+    if (err) {
+      console.error("Logout Error:", err);
+      return next(err);
+    }
+
+    req.session.destroy((err) => {
+      if (err) {
+        console.error("Session Destroy Error:", err);
+        return next(err);
+      }
+
+      res.send("Goodbye!");
+    });
+  });
 });
 
 router.get("/failure", (req, res) => {
