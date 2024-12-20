@@ -42,7 +42,12 @@ router.get(
 router.get("/protected", isLoggedIn, async (req, res) => {
   const referer = req.get("Referer");
 
-  console.log(referer);
+  console.log(req.user);
+
+  if (referer === "http://localhost:5000/")
+    return res.send(
+      `Hello ${req.user.displayName} </br> <a href='/auth/google/logout'>logout</a>`
+    );
 
   const result = await User.findOne({ email: req.user.email });
   if (result) {
@@ -58,7 +63,7 @@ router.get("/protected", isLoggedIn, async (req, res) => {
       });
 
       user = await user.save();
-      res.redirect(referer + "student");
+      res.redirect("http://localhost:5173" + "student");
       // res.send(`Hello ${user} </br> <a href='/auth/google/logout'>logout</a>`);
     } catch (ex) {
       res.send("some thing went wrong");
