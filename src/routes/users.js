@@ -26,6 +26,16 @@ router.get("/", async (req, res) => {
   res.send(users);
 });
 
+router.get("/profile", (req, res) => {
+  if (req.session.user) {
+    res.send(
+      `Hello ${req.session.user.firstName} ${req.session.user.lastName}`
+    );
+  } else {
+    res.send("sign in first");
+  }
+});
+
 module.exports = router;
 
 // Create a new user

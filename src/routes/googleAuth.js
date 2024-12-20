@@ -2,6 +2,7 @@ const express = require("express");
 const passport = require("passport");
 const router = express.Router();
 const GoogleStrategy = require("passport-google-oauth2").Strategy;
+const { User, validate } = require("../models/user");
 
 passport.use(
   new GoogleStrategy(
@@ -16,19 +17,15 @@ passport.use(
     }
   )
 );
-
 passport.serializeUser(function (user, done) {
   done(null, user);
 });
-
 passport.deserializeUser(function (user, done) {
   done(null, user);
 });
-
 function isLoggedIn(req, res, next) {
   req.user ? next() : res.sendStatus(401);
 }
-
 router.get(
   "/",
   passport.authenticate("google", { scope: ["email", "profile"] })
@@ -42,10 +39,33 @@ router.get(
   })
 );
 
-router.get("/protected", isLoggedIn, (req, res) => {
-  res.send(
-    `Hello ${req.user.displayName} </br> <a href='/auth/google/logout'>logout</a>`
-  );
+router.get("/protected", isLoggedIn, async (req, res) => {
+  const referer = req.get("Referer") || "Unknown source";
+  console.log(referer);
+
+  const result = await User.findOne({ email: req.user.email });
+  if (result) {
+    req.session.user = result;
+    res.redirect(referer + "student");
+    res.send(
+      `Hello ${result.firstName} ${result.lastName} </br> <a href='/auth/google/logout'>logout</a>`
+    );
+  } else {
+    try {
+      let user = new User({
+        firstName: req.user.given_name,
+        lastName: req.user.family_name,
+        email: req.user.email,
+        authType: "google",
+      });
+
+      user = await user.save();
+      res.redirect(referer + "student");
+      res.send(`Hello ${user} </br> <a href='/auth/google/logout'>logout</a>`);
+    } catch (ex) {
+      res.send("some thing went wrong");
+    }
+  }
 });
 
 router.get("/logout", (req, res) => {
