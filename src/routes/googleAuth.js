@@ -40,16 +40,14 @@ router.get(
 );
 
 router.get("/protected", isLoggedIn, async (req, res) => {
-  const referer = req.get("Referer") || "Unknown source";
+  const referer = req.get("Referer");
+
   console.log(referer);
 
   const result = await User.findOne({ email: req.user.email });
   if (result) {
     req.session.user = result;
     res.redirect(referer + "student");
-    res.send(
-      `Hello ${result.firstName} ${result.lastName} </br> <a href='/auth/google/logout'>logout</a>`
-    );
   } else {
     try {
       let user = new User({
@@ -61,7 +59,7 @@ router.get("/protected", isLoggedIn, async (req, res) => {
 
       user = await user.save();
       res.redirect(referer + "student");
-      res.send(`Hello ${user} </br> <a href='/auth/google/logout'>logout</a>`);
+      // res.send(`Hello ${user} </br> <a href='/auth/google/logout'>logout</a>`);
     } catch (ex) {
       res.send("some thing went wrong");
     }
