@@ -42,7 +42,12 @@ router.get(
 router.get("/protected", isLoggedIn, async (req, res) => {
   const referer = req.get("Referer");
 
-  console.log(referer);
+  console.log(req.user);
+
+  if (referer === "http://localhost:5000/")
+    return res.send(
+      `Hello ${req.user.displayName} </br> <a href='/auth/google/logout'>logout</a>`
+    );
 
   const result = await User.findOne({ email: req.user.email });
   if (result) {
