@@ -7,6 +7,7 @@ const cors = require("cors");
 const passport = require("passport");
 const googleAuth = require("./routes/googleAuth");
 const users = require("./routes/users");
+const courses = require("./routes/courses");
 
 const app = express();
 
@@ -15,8 +16,8 @@ mongoose
   .then(() => console.log("Connected to mongoDB..."))
   .catch((err) => console.log("Could not connect to mongoDB...", err));
 
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
 
 app.use(
   session({
@@ -38,6 +39,7 @@ app.get("/", (req, res) => {
 // Routes
 app.use("/auth/google", googleAuth);
 app.use("/api/users", users);
+app.use("/api/courses", courses);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
