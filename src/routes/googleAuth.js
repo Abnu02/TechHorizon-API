@@ -63,7 +63,7 @@ router.get("/protected", isLoggedIn, async (req, res) => {
       });
 
       user = await user.save();
-      res.redirect(referer + "student");
+      res.redirect("http://localhost:5173" + "student");
       // res.send(`Hello ${user} </br> <a href='/auth/google/logout'>logout</a>`);
     } catch (ex) {
       res.send("some thing went wrong");
