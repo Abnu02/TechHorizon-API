@@ -30,6 +30,15 @@ const Schema = new mongoose.Schema({
   ],
 });
 
+const validateLesson = (lesson) => {
+  const schema = Joi.object({
+    title: Joi.string().required(),
+    description: Joi.string(),
+  });
+
+  return schema.validate(lesson);
+};
+
 const validate = (course) => {
   const schema = Joi.object({
     title: Joi.string().required(),
@@ -42,12 +51,7 @@ const validate = (course) => {
         name: Joi.string().required(),
       })
     ),
-    lesson: Joi.array().items(
-      Joi.object({
-        title: Joi.string().required(),
-        description: Joi.string(),
-      })
-    ),
+    lesson: Joi.array().items(validateLesson),
     enrolledStudent: Joi.array().items(
       Joi.object({
         name: Joi.string().required(),
@@ -61,3 +65,4 @@ const Course = mongoose.model("Course", Schema);
 
 module.exports.Course = Course;
 module.exports.validate = validate;
+module.exports.validateLesson = validateLesson;
