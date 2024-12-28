@@ -1,6 +1,16 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
 
+// Define a schema for file metadata
+const fileSchema = new mongoose.Schema({
+  filename: String,
+  originalname: String,
+  path: String,
+  mimetype: String,
+  size: Number,
+  uploadDate: { type: Date, default: Date.now },
+});
+
 const lessonSchema = new mongoose.Schema({
   _id: {
     type: mongoose.Schema.Types.ObjectId,
@@ -8,6 +18,7 @@ const lessonSchema = new mongoose.Schema({
   },
   title: { type: String },
   description: { type: String },
+  file: [fileSchema],
 });
 
 const Schema = new mongoose.Schema({
@@ -34,6 +45,7 @@ const validateLesson = (lesson) => {
   const schema = Joi.object({
     title: Joi.string().required(),
     description: Joi.string(),
+    file: Joi.object({}),
   });
 
   return schema.validate(lesson);

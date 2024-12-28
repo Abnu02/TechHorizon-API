@@ -2,13 +2,12 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const express = require("express");
 const session = require("express-session");
-const path = require("path");
 const cors = require("cors");
+const path = require("path");
 const passport = require("passport");
 const googleAuth = require("./routes/googleAuth");
 const users = require("./routes/users");
 const courses = require("./routes/courses");
-const lessonFiles = require("./routes/lessonFiles");
 
 const app = express();
 
@@ -41,7 +40,6 @@ app.get("/", (req, res) => {
 app.use("/auth/google", googleAuth);
 app.use("/api/users", users);
 app.use("/api/courses", courses);
-app.use("/api/lessonFiles", lessonFiles);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
