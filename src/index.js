@@ -31,6 +31,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(express.static(path.join(__dirname, "../public")));
+app.use(express.static(path.join(__dirname, "../lessonFiles")));
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public", "index.html"));
