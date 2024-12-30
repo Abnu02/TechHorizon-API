@@ -21,15 +21,20 @@ Make sure you have the following installed:
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone <repository-url>
    cd TechHorizon-API
    ```
+
 2. Install dependencies:
+
    ```bash
    npm install
    ```
+
 3. Create a `.env` file in the root directory and add the following:
+
    ```env
    MONGO_URI=<your-mongodb-connection-string>
    PORT=5000
@@ -38,25 +43,30 @@ Make sure you have the following installed:
 ### Running the Server
 
 1. Start the server in development mode:
+
    ```bash
    npm run dev
    ```
+
 2. Or, start the server in production mode:
+
    ```bash
    npm start
    ```
+
 3. The server will run on `http://localhost:5000` by default (or the port specified in the `.env` file).
 
 ### Testing the Server
 
 - Visit the base endpoint in your browser or API testing tool:
-  ```
-  GET http://localhost:5000/
-  ```
-  Response:
+
+````GET http://localhost:5000/
+
+  ```  Response:
+
   ```json
   "Welcome to the TechHorizon API"
-  ```
+````
 
 ## Project Structure
 
@@ -79,17 +89,23 @@ TechHorizon-API/
 
 1. Fork the repository.
 2. Create a feature branch:
+
    ```bash
-   git checkout -b feature-name
+      git checkout -b feature-name
    ```
+
 3. Commit your changes:
+
    ```bash
-   git commit -m "Description of changes"
+      git commit -m "Description of changes"
    ```
+
 4. Push to your fork:
+
    ```bash
-   git push origin feature-name
+      git push origin feature-name
    ```
+
 5. Open a pull request.
 
 ## License
@@ -99,4 +115,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Contact
 
 For any inquiries or contributions, feel free to reach out to the TechHorizon team!
-

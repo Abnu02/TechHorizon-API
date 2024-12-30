@@ -49,14 +49,12 @@ router.use((err, req, res, next) => {
 router.post("/", async (req, res) => {
   let { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
-  console.log(req.body);
   try {
     let course = new Course(req.body);
     course = await course.save();
 
     res.status(201).send(course);
   } catch (err) {
-    console.error(err.message);
     res.status(400).send("something went wrong try again please.");
   }
 });
@@ -84,19 +82,16 @@ router.get("/profile", (req, res) => {
 
 router.put("/:id/lesson", upload.single("file"), async (req, res) => {
   try {
-    // Validate file upload
     if (!req.file) {
       return res.status(400).send("A file is required.");
     }
 
-    // Validate lesson data
     const { error } = validateLesson(req.body);
     if (error)
       return res
         .status(400)
         .send("Invalid lesson data: " + error.details[0].message);
 
-    // Process file metadata
     const fileData = {
       filename: req.file.filename,
       originalname: req.file.originalname,
@@ -124,7 +119,6 @@ router.put("/:id/lesson", upload.single("file"), async (req, res) => {
 
     res.status(200).send(course);
   } catch (err) {
-    console.error("Error updating course:", err);
     res.status(500).send("Something went wrong. Please try again.");
   }
 });
