@@ -51,6 +51,7 @@ router.use((err, req, res, next) => {
 });
 
 router.post("/", upload.single("image"), async (req, res) => {
+  console.log("request began");
   if (!req.file) {
     return res.status(400).send("An image file is required.");
   }
@@ -71,7 +72,7 @@ router.post("/", upload.single("image"), async (req, res) => {
 
     let blog = new Blog({
       title: req.body.title,
-      categorie: req.body.categorie,
+      category: req.body.category,
       detail: req.body.detail,
       tag: req.body.tag,
       date: req.body.date || Date.now(),
@@ -91,8 +92,9 @@ router.post("/", upload.single("image"), async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-  const blog = await Blog.find();
-  res.send(blog);
+  const blogs = await Blog.find();
+  console.log("blogs", blogs);
+  res.send(blogs);
 });
 
 router.get("/post", async (req, res) => {
@@ -173,9 +175,9 @@ router.get("/post", async (req, res) => {
         <label for="title">Title:</label>
         <input type="text" id="title" name="title" minlength="3" required>
 
-        <!-- Categorie -->
-        <label for="categorie">Category:</label>
-        <input type="text" id="categorie" name="categorie" minlength="3" required>
+        <!-- category -->
+        <label for="category">Category:</label>
+        <input type="text" id="category" name="category" minlength="3" required>
 
         <!-- Detail -->
         <label for="detail">Detail:</label>
@@ -233,7 +235,7 @@ router.put("/:id", upload.single("image"), async (req, res) => {
 
     const updateData = {
       title: req.body.title,
-      categorie: req.body.categorie,
+      category: req.body.category,
       detail: req.body.detail,
       tag: req.body.tag,
     };

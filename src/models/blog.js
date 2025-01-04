@@ -1,9 +1,18 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
 
+const ImageSchema = new mongoose.Schema({
+  filename: String,
+  originalname: String,
+  path: String,
+  mimetype: String,
+  size: Number,
+  uploadDate: { type: Date, default: Date.now },
+});
+
 const Schema = new mongoose.Schema({
   title: { type: String, required: true },
-  categorie: { type: String, required: true },
+  category: { type: String, required: true },
   detail: { type: String, required: true },
   tag: { type: String },
   date: { type: Date, default: Date.now },
@@ -11,15 +20,16 @@ const Schema = new mongoose.Schema({
     _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     name: { type: String },
   },
+  image: ImageSchema,
 });
 
 const validate = (blog) => {
   const schema = Joi.object({
     title: Joi.string().min(3).required(),
-    categorie: Joi.string().min(3).required(),
+    category: Joi.string().min(3).required(),
     detail: Joi.string().min(10).required(),
     tag: Joi.string(),
-    date: Joi.string(),
+    date: Joi.date(),
     author: Joi.object({
       _id: Joi.string().required(),
       name: Joi.string().required(),

@@ -662,4 +662,5 @@ node_modules/dotenv/lib/main.d.ts
 node_modules/dotenv/lib/main.js
 .env
 package-lock.json
-blogImages/image-1735599755355-386681000.png
+blogImages/
+lessonFiles/file-1735382467565-458850439.png
