@@ -1,4 +1,5 @@
 const { Blog, validate } = require("../models/blog");
+const { User } = require("../models/user");
 require("dotenv").config();
 const multer = require("multer");
 const express = require("express");
@@ -17,7 +18,6 @@ const storage = multer.diskStorage({
     );
   },
 });
-
 // Initialize multer
 const upload = multer({
   storage: storage,
@@ -36,6 +36,7 @@ const upload = multer({
     }
   },
 });
+
 router.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {
     return res.status(400).send({ message: `Multer error: ${err.message}` });
@@ -51,7 +52,6 @@ router.use((err, req, res, next) => {
 });
 
 router.post("/", upload.single("image"), async (req, res) => {
-  console.log("request began");
   if (!req.file) {
     return res.status(400).send("An image file is required.");
   }
@@ -70,15 +70,17 @@ router.post("/", upload.single("image"), async (req, res) => {
       size: req.file.size,
     };
 
+    const findAuthor = await User.findById(req.body.author._id);
+
     let blog = new Blog({
       title: req.body.title,
       category: req.body.category,
       detail: req.body.detail,
       tag: req.body.tag,
-      date: req.body.date || Date.now(),
+      date: Date.now(),
       author: {
         _id: req.body.author._id,
-        name: `${req.body.author.firstname} ${req.body.author.lastname}`,
+        name: `${findAuthor.firstName} ${findAuthor.lastName}`,
       },
       image: imageData,
     });

@@ -32,7 +32,6 @@ const validate = (blog) => {
     date: Joi.date(),
     author: Joi.object({
       _id: Joi.string().required(),
-      name: Joi.string().required(),
     }),
   });
 
@@ -43,11 +42,3 @@ const Blog = mongoose.model("Blog", Schema);
 
 module.exports.Blog = Blog;
 module.exports.validate = validate;
-
-// const imageSchema = new mongoose.Schema({
-//   filename: { type: String },
-//   originalname: { type: String },
-//   path: { type: String },
-//   mimetype: { type: String },
-//   size: { type: Number },
-// });
