@@ -9,6 +9,7 @@ const googleAuth = require("./routes/googleAuth");
 const users = require("./routes/users");
 const courses = require("./routes/courses");
 const blogs = require("./routes/blogs");
+const events = require("./routes/events");
 
 const app = express();
 
@@ -44,6 +45,7 @@ app.use("/auth/google", googleAuth);
 app.use("/api/users", users);
 app.use("/api/courses", courses);
 app.use("/api/blogs", blogs);
+app.use("/api/events", events);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
