@@ -47,7 +47,7 @@ router.use((err, req, res, next) => {
       .status(400)
       .send({ message: `Validation error: ${err.message}` });
   }
-  console.error(err);
+
   res.status(500).send({ message: "Internal server error" });
 });
 
@@ -88,14 +88,12 @@ router.post("/", upload.single("image"), async (req, res) => {
 
     res.status(201).send(blog);
   } catch (err) {
-    console.error(err.message);
     res.status(400).send("Something went wrong. Please try again.");
   }
 });
 
 router.get("/", async (req, res) => {
   const blogs = await Blog.find();
-  console.log("blogs", blogs);
   res.send(blogs);
 });
 

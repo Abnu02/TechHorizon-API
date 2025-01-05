@@ -36,9 +36,10 @@ router.post("/", async (req, res) => {
 
     let event = new Event({
       title: req.body.title,
-      date: Date.now(),
+      date: req.body.date,
       location: req.body.location,
       description: req.body.description,
+      category: req.body.category,
       author: {
         _id: req.body.author._id,
         name: `${findAuthor.firstName} ${findAuthor.lastName}`,

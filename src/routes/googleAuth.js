@@ -2,7 +2,7 @@ const express = require("express");
 const passport = require("passport");
 const router = express.Router();
 const GoogleStrategy = require("passport-google-oauth2").Strategy;
-const { User, validate } = require("../models/user");
+const { User } = require("../models/user");
 
 passport.use(
   new GoogleStrategy(
@@ -42,17 +42,18 @@ router.get(
 router.get("/protected", isLoggedIn, async (req, res) => {
   const referer = req.get("Referer");
 
-  console.log(req.user);
-
   if (referer === "http://localhost:5000/")
     return res.send(
-      `Hello ${req.user.displayName} </br> <a href='/auth/google/logout'>logout</a>`
+      `Hello ${req.user.displayName}
+      </br> <a href='http://localhost:5000/api/users/profile'>profile</a>
+      </br> <a href='/auth/google/logout'>logout</a>
+      `
     );
 
   const result = await User.findOne({ email: req.user.email });
   if (result) {
     req.session.user = result;
-    res.redirect(referer + "student");
+    res.redirect(`${referer}student?userId=${result._id}`);
   } else {
     try {
       let user = new User({
@@ -63,8 +64,8 @@ router.get("/protected", isLoggedIn, async (req, res) => {
       });
 
       user = await user.save();
-      res.redirect("http://localhost:5173/sighin");
-      // res.send(`Hello ${user} </br> <a href='/auth/google/logout'>logout</a>`);
+
+      res.redirect(`${referer}profilesetup?userId=${user._id}`);
     } catch (ex) {
       res.send("some thing went wrong");
     }
@@ -73,14 +74,10 @@ router.get("/protected", isLoggedIn, async (req, res) => {
 
 router.get("/logout", (req, res) => {
   req.logout((err) => {
-    if (err) {
-      console.error("Logout Error:", err);
-      return next(err);
-    }
+    if (err) return next(err);
 
     req.session.destroy((err) => {
       if (err) {
-        console.error("Session Destroy Error:", err);
         return next(err);
       }
 
