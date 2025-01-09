@@ -1,3 +1,4 @@
+const { Course } = require("../models/course");
 const { User, validate, validateDetail } = require("../models/user");
 const express = require("express");
 const router = express.Router();
@@ -58,6 +59,66 @@ router.put("/:id", async (req, res) => {
     return res.status(404).send("The user with the given ID was not found.");
 
   res.send(user);
+});
+
+router.put("/:id/enroll", async (req, res) => {
+  const { id: userId } = req.params;
+  const { id: courseId, name } = req.body;
+
+  if (!courseId || !name) {
+    return res.status(400).send("Course ID and user name are required.");
+  }
+
+  try {
+    // Check if course exists
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res
+        .status(404)
+        .send("The course with the given ID was not found.");
+    }
+
+    // Check if user exists
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send("The user with the given ID was not found.");
+    }
+
+    // Prevent duplicate enrollment
+    const alreadyEnrolled = course.enrolledStudent.some(
+      (student) => student._id.toString() === userId
+    );
+    if (alreadyEnrolled) {
+      return res.status(400).send("You have already enrolled in this course.");
+    }
+
+    // Update course and user concurrently
+    const [updatedCourse, updatedUser] = await Promise.all([
+      Course.findByIdAndUpdate(
+        courseId,
+        {
+          $push: {
+            enrolledStudent: { _id: userId, name },
+          },
+        },
+        { new: true }
+      ),
+      User.findByIdAndUpdate(
+        userId,
+        {
+          $push: {
+            enrolledCorses: { _id: courseId, title: course.title },
+          },
+        },
+        { new: true }
+      ),
+    ]);
+
+    res.send({ updatedCourse, updatedUser });
+  } catch (error) {
+    console.error("Error enrolling user:", error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 router.delete("/:id", async (req, res) => {

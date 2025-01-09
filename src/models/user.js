@@ -29,7 +29,7 @@ const Schema = new mongoose.Schema({
   enrolledCorses: [
     {
       _id: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
-      name: { type: String },
+      title: { type: String },
     },
   ],
 });
