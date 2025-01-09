@@ -6,35 +6,10 @@ const express = require("express");
 const path = require("path");
 const router = express.Router();
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.resolve(__dirname, "../../blogimages"));
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(
-      null,
-      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
-    );
-  },
-});
-// Initialize multer
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB limit
-  fileFilter: (req, file, cb) => {
-    const fileTypes = /jpeg|jpg|png|pdf/;
-    const extName = fileTypes.test(
-      path.extname(file.originalname).toLowerCase()
-    );
-    const mimeType = fileTypes.test(file.mimetype);
-
-    if (extName && mimeType) {
-      return cb(null, true);
-    } else {
-      cb(new Error("Only images and PDFs are allowed."));
-    }
-  },
+const upload = createMulterUpload({
+  destination: path.resolve(__dirname, "../../blogimages"),
+  maxFileSize: 10 * 1024 * 1024, // 10 MB
+  allowedFileTypes: /jpeg|jpg|png|pdf/, // Allowed extensions
 });
 
 router.use((err, req, res, next) => {

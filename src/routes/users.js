@@ -85,7 +85,7 @@ router.put("/:id/enroll", async (req, res) => {
     }
 
     // Prevent duplicate enrollment
-    const alreadyEnrolled = course.enrolledStudent.some(
+    const alreadyEnrolled = course?.enrolledStudent.some(
       (student) => student._id.toString() === userId
     );
     if (alreadyEnrolled) {
