@@ -10,11 +10,7 @@ router.post("/", async (req, res) => {
     let user = new User(req.body);
     user = await user.save();
 
-    res.status(201).send({
-      _id: user._id,
-      name: ` ${user.firstName}  ${user.lastName}`,
-      email: user.email,
-    });
+    res.status(201).send(user);
   } catch (err) {
     res.status(400).send("user already registerd please log in instead.");
   }
@@ -32,7 +28,7 @@ router.post("/login", async (req, res) => {
   res.send(user);
 });
 
-router.get("/logout", (req, res) => {
+router.post("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       return next(err);
@@ -45,8 +41,6 @@ router.get("/logout", (req, res) => {
 router.put("/:id", async (req, res) => {
   let { error } = validateDetail(req.body);
   if (error) return res.status(400).send(error.details[0].message);
-
-  console.log(req.body);
 
   const user = await User.findByIdAndUpdate(
     req.params.id,

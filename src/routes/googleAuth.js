@@ -9,7 +9,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:5000/auth/google/callback",
+      callbackURL: process.env.GOOGLE_CALLBACK_URL,
       passReqToCallback: true,
     },
     function (request, accessToken, refreshToken, profile, done) {
@@ -44,16 +44,18 @@ router.get("/protected", isLoggedIn, async (req, res) => {
 
   if (referer === "http://localhost:5000/")
     return res.send(
-      `Hello ${req.user.displayName}
-      </br> <a href='http://localhost:5000/api/users/profile'>profile</a>
-      </br> <a href='/auth/google/logout'>logout</a>
+      `Hello ${req.user.displayName} </br> <a href='http://localhost:5000/api/users/profile'>profile</a>      </br> <a href='/auth/google/logout'>logout</a>
       `
     );
 
   const result = await User.findOne({ email: req.user.email });
   if (result) {
+    console.log("result", result);
     req.session.user = result;
-    res.redirect(`${referer}student?userId=${result._id}`);
+
+    if (result.department)
+      res.redirect(`${referer}join/googlelogin?userid=${result._id}`);
+    else res.redirect(`${referer}join/profilesetup?userid=${result._id}`);
   } else {
     try {
       let user = new User({
@@ -65,7 +67,7 @@ router.get("/protected", isLoggedIn, async (req, res) => {
 
       user = await user.save();
 
-      res.redirect(`${referer}profilesetup?userId=${user._id}`);
+      res.redirect(`${referer}join/profilesetup?userId=${user._id}`);
     } catch (ex) {
       res.send("some thing went wrong");
     }

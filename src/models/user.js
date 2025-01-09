@@ -9,15 +9,7 @@ const Schema = new mongoose.Schema({
   phone: { type: String },
   department: { type: String },
   college: { type: String },
-  year: {
-    type: Number,
-    min: 1,
-    max: 7,
-    validate: {
-      validator: Number.isInteger,
-      message: "Year must be an integer between 1 and 7.",
-    },
-  },
+  year: { type: String },
   birthDate: { type: Date },
   role: {
     type: String,
@@ -25,8 +17,8 @@ const Schema = new mongoose.Schema({
     default: "student",
   },
   permissio: {
-    type: String,
-    enum: ["read", "write", "delete"],
+    type: [String],
+    enum: ["read", "write", "delete", "update"],
     default: "read",
   },
   authType: {
@@ -34,6 +26,12 @@ const Schema = new mongoose.Schema({
     enum: ["regular", "google"],
     required: true,
   },
+  enrolledCorses: [
+    {
+      _id: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
+      name: { type: String },
+    },
+  ],
 });
 
 const validate = (user) => {
@@ -67,6 +65,20 @@ const validate = (user) => {
       })
       .messages({ "any.only": "Passwords must match." }),
     authType: Joi.string().valid("regular", "google").required(),
+    role: Joi.string()
+      .valid("admin", "student", "teacher")
+      .default("student")
+      .messages({
+        "any.only": "Role must be one of 'admin', 'student', or 'teacher'.",
+      }),
+    permission: Joi.array()
+      .items(Joi.string().valid("read", "write", "delete", "update"))
+      .default(["read"])
+      .messages({
+        "array.includes":
+          "Permissions must only include 'read', 'write', or 'delete'.",
+        "array.base": "Permissions must be an array of strings.",
+      }),
   });
 
   return schema.validate(user);
@@ -74,34 +86,25 @@ const validate = (user) => {
 
 const validateDetail = (data) => {
   const schema = Joi.object({
-    phone: Joi.string().pattern(/^\d+$/).min(10).max(15).optional().messages({
-      "string.pattern.base": "Phone number must contain only digits.",
-      "string.min": "Phone number must be at least 10 digits.",
-      "string.max": "Phone number must be at most 15 digits.",
-    }),
+    phone: Joi.string()
+      .pattern(/^(\+251|0)[1-9]\d{8}$/)
+      .messages({
+        "string.pattern.base":
+          "Phone number must start with '+251' or '0' and contain 9 digits after that.",
+        "string.min": "Phone number must be at least 10 characters long.",
+        "string.max": "Phone number must be at most 15 characters long.",
+      }),
     department: Joi.string().optional(),
     college: Joi.string().optional(),
-    year: Joi.number().integer().min(1).max(7).optional().messages({
-      "number.base": "Year must be a number.",
-      "number.integer": "Year must be an integer.",
-      "number.min": "Year must be at least 1.",
-      "number.max": "Year must be at most 7.",
-    }),
+    year: Joi.alternatives()
+      .try(Joi.string(), Joi.number())
+      .optional()
+      .messages({
+        "alternatives.base": "Year must be either a string or a number.",
+      }),
     birthDate: Joi.date().optional().messages({
       "date.base": "BirthDate must be a valid date.",
     }),
-    role: Joi.string()
-      .valid("admin", "student", "teacher")
-      .default("student")
-      .messages({
-        "any.only": "Role must be one of 'admin', 'student', or 'teacher'.",
-      }),
-    permission: Joi.string()
-      .valid("read", "write", "delete")
-      .default("read")
-      .messages({
-        "any.only": "Permission must be one of 'read', 'write', or 'delete'.",
-      }),
   });
 
   return schema.validate(data, { abortEarly: false });
