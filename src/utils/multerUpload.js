@@ -8,7 +8,11 @@ const path = require("path");
  * @param {number} fileSizeLimit - Maximum file size in bytes
  * @returns {multer.Multer} - Configured multer instance
  */
-const createMulterUpload = (destination, allowedFileTypes, fileSizeLimit) => {
+const createMulterUpload = ({
+  destination,
+  allowedFileTypes,
+  fileSizeLimit,
+}) => {
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, path.resolve(__dirname, destination));
@@ -23,7 +27,7 @@ const createMulterUpload = (destination, allowedFileTypes, fileSizeLimit) => {
   });
 
   const fileFilter = (req, file, cb) => {
-    const fileTypes = new RegExp(allowedFileTypes.join("|")); // Convert array to regex
+    const fileTypes = new RegExp(allowedFileTypes.source); // Convert array to regex
     const extName = fileTypes.test(
       path.extname(file.originalname).toLowerCase()
     );

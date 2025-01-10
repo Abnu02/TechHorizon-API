@@ -5,6 +5,7 @@ const multer = require("multer");
 const express = require("express");
 const path = require("path");
 const router = express.Router();
+const createMulterUpload = require("./../utils/multerUpload");
 
 const upload = createMulterUpload({
   destination: path.resolve(__dirname, "../../blogimages"),

@@ -7,11 +7,11 @@ const router = express.Router();
 const createMulterUpload = require("./../utils/multerUpload");
 
 // Configure multer with specific options
-const upload = createMulterUpload(
-  "../../lessonFiles", // Destination folder
-  ["jpeg", "jpg", "png", "mp4", "mkv", "pdf"], // Allowed file types
-  256 * 1024 * 1024 // 256 MB file size limit
-);
+const upload = createMulterUpload({
+  destination: "../../lessonFiles",
+  allowedFileTypes: ["jpeg", "jpg", "png", "mp4", "mkv", "pdf"],
+  fileSizeLimit: 256 * 1024 * 1024, // 256 MB file size limit
+});
 
 // Error handling middleware
 router.use((err, req, res, next) => {
